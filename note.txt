@@ -91,3 +91,10 @@ stok_produk_keluar_barang.code_sha
 
 FROM stok_produk_keluar,stok_produk_keluar_barang
 WHERE stok_produk_keluar.send_code=stok_produk_keluar_barang.send_code
+
+
+//update perubahan database
+
+ALTER TABLE `data_produk_stok` ADD `loc` VARCHAR(30) NOT NULL DEFAULT 'Toko' AFTER `code_sha`;
+ALTER TABLE `data_produk_stok_masuk` ADD `lokasi` VARCHAR(10) NOT NULL DEFAULT 'Toko' AFTER `codeinput`;
+add table newtb_mutasi

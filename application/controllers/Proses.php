@@ -959,10 +959,11 @@ class Proses extends CI_Controller
     } //end
     function saveprodukmasuk(){
         $codeinput = $this->data_model->acakKode(19);
-        $sj = $this->input->post('sj');
-        $tglmasuk = $this->input->post('tglmasuk');
-        $idprodusen = $this->input->post('idprodusen');
-        $tagihan = $this->input->post('tagihan');
+        $sj = $this->input->post('sj', TRUE);
+        $tglmasuk = $this->input->post('tglmasuk', TRUE);
+        $idprodusen = $this->input->post('idprodusen', TRUE);
+        $tagihan = $this->input->post('tagihan', TRUE);
+        $diterimadi = $this->input->post('diterimadi', TRUE);
         $tglinput = date('Y-m-d H:i:s');
         $totalharga = preg_replace('/[^0-9]/', '', $this->input->post('totalharga'));
         //echo "$codeinput <br> $sj <br> $tglmasuk <br> $idprodusen <br> $totalharga <br> $tagihan";
@@ -985,7 +986,7 @@ class Proses extends CI_Controller
             $uploadan = $data['upload_data']['file_name'];
         }
         
-        if($sj != '' AND $tglmasuk != '' AND $idprodusen != '' AND $totalharga != ''){
+        if($sj != '' AND $tglmasuk != '' AND $idprodusen != '' AND $totalharga != '' AND $diterimadi != ''){
             $nama_produsen2 = $this->data_model->get_byid('data_produsen',['id_produsen'=>$idprodusen])->row('nama_produsen');
             $nama_produsen = strtolower($nama_produsen2);
             $this->data_model->saved('data_produk_stok_masuk',[
@@ -997,7 +998,8 @@ class Proses extends CI_Controller
                 'total_nilai_barang' => $totalharga,
                 'masuk_tagihan' => $tagihan=='yes'?'yes':'no',
                 'gambar' => $uploadan,
-                'codeinput' => $codeinput
+                'codeinput' => $codeinput,
+                'lokasi' => $diterimadi=='Gudang' ?'Gudang':'Toko'
             ]);
             if($tagihan=="yes"){
                 $this->data_model->saved('tagihan', [

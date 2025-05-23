@@ -71,6 +71,11 @@
 								<strong><?=date("d M Y", strtotime($indata['tgl_masuk']));?></strong>
 							</div>
                             <div class="sow">
+								<span style="width:200px;">Lokasi</span>
+								<span>:</span>
+								<strong><?=$indata['lokasi'];?></strong>
+							</div>
+                            <div class="sow">
 								<span style="width:200px;">Total Harga Barang</span>
 								<span>:</span>
 								<strong>Rp. <?=number_format($indata['total_nilai_barang'], 0, ',', '.');?></strong>
@@ -99,15 +104,16 @@
                             <div class="table-responsive">
                                 <table class="table table-bordered table-hover">
                                     <thead>
-                                        <tr>
+                                        <tr class="bg-secondary text-white">
                                             <th scope="col">No</th>
-                                            <th scope="col">KODE</th>
-                                            <th scope="col">PRODUK</th>
-                                            <th scope="col">MODEL</th>
-                                            <th scope="col">UKURAN</th>
-                                            <th scope="col">JUMLAH</th>
-                                            <th scope="col">HPP</th>
-                                            <th scope="col">HARGA JUAL</th>
+                                            <th>KODE</th>
+                                            <th>PRODUK</th>
+                                            <th>MODEL</th>
+                                            <th>UKURAN</th>
+                                            <th>JUMLAH</th>
+                                            <th>HPP</th>
+                                            <th>TOTAL HPP</th>
+                                            <th>HARGA JUAL</th>
                                             <th></th>
                                         </tr>
                                     </thead>

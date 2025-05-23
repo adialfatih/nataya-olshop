@@ -1,4 +1,4 @@
-		<script src="<?=base_url('assets/');?>vendors/scripts/core.js"></script>
+<script src="<?=base_url('assets/');?>vendors/scripts/core.js"></script>
 		<script src="<?=base_url('assets/');?>vendors/scripts/script.min.js"></script>
 		<script src="<?=base_url('assets/');?>vendors/scripts/process.js"></script>
 		<script src="<?=base_url('assets/');?>vendors/scripts/layout-settings.js"></script>
@@ -6,9 +6,47 @@
 		<script src="<?=base_url('assets/');?>src/plugins/slick/slick.min.js"></script>
 		<!-- bootstrap-touchspin js -->
 		<script src="<?=base_url('assets/');?>src/plugins/bootstrap-touchspin/jquery.bootstrap-touchspin.js"></script>
+		<?php  if(!empty($autocomplet)) { ?>
 		<script src="<?=base_url('assets2/');?>autoComplete.min.js"></script>
+		<?php } ?>
         <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11.10.0/dist/sweetalert2.all.min.js" integrity="sha256-IW9RTty6djbi3+dyypxajC14pE6ZrP53DLfY9w40Xn4=" crossorigin="anonymous"></script>
 		<script>
+			<?php if($autocomplet=="stokgudang"){ 
+			$stok = $this->db->query("SELECT nama_produk FROM data_produk");
+			$ar = array();
+			foreach($stok->result() as $st){
+				$ds = '"'.$st->nama_produk.'"';
+				$ar[] = $ds;
+			}
+			$stok_im = implode(",",$ar);
+			?>
+			const autoCompleteJS = new autoComplete({
+                placeHolder: "Ketik Nama Produk...",
+                data: { src: [<?=$stok_im;?>], cache: true, },
+                resultItem: { highlight: true },
+                events: {
+                    input: {
+                        selection: (event) => {
+                            const selection = event.detail.selection.value;
+                            autoCompleteJS.input.value = selection;
+							var thisId = document.getElementById('thisID').value;
+							var thisTipeStok = document.getElementById('thisTipeStok').value;
+							loadstok(thisId,thisTipeStok,'null',selection);
+							$('#kategori90').val('');
+                        }
+                    }
+                }
+            });
+			<?php } ?>
+			$('#autoComplete').on('change', function() {
+				var vs = $('#autoComplete').val();
+				if(vs == ""){
+					var thisId = document.getElementById('thisID').value;
+					var thisTipeStok = document.getElementById('thisTipeStok').value;
+					loadstok(thisId,thisTipeStok,'null','null');
+					$('#kategori90').val('');
+				}
+			});
 			<?php if($autocomplet=="stokprodukmasuk"){ 
 			$stok = $this->db->query("SELECT DISTINCT kode_bar1  FROM data_produk_detil");
 			$ar = array();
@@ -18,7 +56,7 @@
 			}
 			$stok_im = implode(",",$ar);
 			?>
-				const autoCompleteJS = new autoComplete({
+			const autoCompleteJS = new autoComplete({
                 placeHolder: "Ketik kode...",
                 data: {
                     src: [<?=$stok_im;?>],
@@ -142,6 +180,11 @@
 								document.getElementById('modelproduk').value = '';
 								document.getElementById('ukuranproduk').value = '';
 								document.getElementById('jumlahproduk').value = '';
+								Swal.fire({
+									title: "Berhasil!",
+									text: "Menyimpan data Stok Masuk",
+									icon: "success"
+								});
 							} else {
 								Swal.fire({
 									title: "Gagal!",
@@ -168,11 +211,11 @@
 			}
 			var cd = document.getElementById('codeinput2').value;
 			loadDAta1(cd);
-			function hapusIn(id){
+			function hapusIn(id,codeinput){
 				$.ajax({
 					url:"<?=base_url();?>prosesajax/hapusTablke",
 					type: "POST",
-					data: {"id" : id},
+					data: {"id" : id, "codeinput" : codeinput},
 					cache: false,
 					success: function(dataResult){
 						var dataResult = JSON.parse(dataResult);
@@ -272,32 +315,42 @@
 				input.value = value;
 			}
 			<?php if($showStok=="true"){ ?>
-			function loadstok(id){
+			//var tipeShowStok = "<?=$showStokTipe;?>";
+			function loadstok(id,tipe,kat,nm){
+				console.log('nm : '+nm);
+				document.getElementById('thisID').value = ''+id;
 				$('#viewStok').html('<tr><td colspan="6"><div style="width:100%;display:flex;justify-content:center;align-items:center"><div class="loader"></div></div></td></tr>');
 				console.log('id : '+id);
 				$.ajax({
-					url:"prosesajax/datadis",
+					url:"<?=base_url();?>prosesajax/datadis",
 					type: "POST",
-					data: {"id" : id},
+					data: {"id" : id, "tipeShowStok" : tipe},
 					cache: false,
 					success: function(dataResult){
 						$('#idStokView').html(dataResult);
 					}
 				});
 				$.ajax({
-					url:"prosesajax/tampilkanstok",
+					url:"<?=base_url();?>prosesajax/tampilkanstok",
 					type: "POST",
-					data: {"id" : id},
+					data: {"id" : id, "tipeShowStok" : tipe, "kat" : kat, "nm" : nm},
 					cache: false,
 					success: function(dataResult){
 						setTimeout(() => {
 							$('#viewStok').html(dataResult);
-						}, 1200);
+						}, 900);
 					}
 				});
 				
 			}
-			loadstok('0');
+			var thisId = document.getElementById('thisID').value;
+			var thisTipeStok = document.getElementById('thisTipeStok').value;
+			loadstok(thisId,thisTipeStok,'null','null');
+			function changeSelectKategori(value){
+				var thisId = document.getElementById('thisID').value;
+				var thisTipeStok = document.getElementById('thisTipeStok').value;
+				loadstok(thisId,thisTipeStok,value,'null');
+			}
 			<?php } ?>
 			function ceksj(val){
 				$.ajax({

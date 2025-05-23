@@ -283,9 +283,14 @@ function data_stok(){
     $akses = $this->session->userdata('akses');
     $produk = $this->db->query("SELECT codeunik,nama_produk FROM data_produk ORDER BY nama_produk");
     $produsen = $this->db->query("SELECT * FROM data_produsen ORDER BY nama_produsen");
-    
+    $uri = strtolower($this->uri->segment(2));
+    if($uri=="gudang"){
+        $showStokTipe = "Gudang";
+    } else {
+        $showStokTipe = "Toko";
+    }
         $data = array(
-            'title' => 'Management Data Stok',
+            'title' => 'Management Data Stok '.$showStokTipe,
             'sess_nama' => $this->session->userdata('nama'),
             'sess_id' => $this->session->userdata('id'),
             'sess_username' => $this->session->userdata('username'),
@@ -295,6 +300,8 @@ function data_stok(){
             'produk' => $produk,
             'produsen' => $produsen,
             'showStok' => 'true',
+            'autocomplet' => 'stokgudang',
+            'showStokTipe' => $showStokTipe,
             'codeinput' => $this->data_model->acakKode(19)
         );
         $this->load->view('part/main_head', $data);

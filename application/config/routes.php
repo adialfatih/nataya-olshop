@@ -21,6 +21,8 @@ $route['product/update/(:any)'] = 'beranda/product_update';
 $route['distributor'] = 'beranda/distributor';
 $route['reseller'] = 'beranda/reseller';
 $route['data-stok'] = 'beranda/data_stok';
+$route['data-stok/toko'] = 'beranda/data_stok';
+$route['data-stok/gudang'] = 'beranda/data_stok';
 $route['data-kain'] = 'beranda/data_kain';
 $route['data-kain/id/(:any)'] = 'beranda/data_kain';
 $route['data-kain/update/(:any)'] = 'beranda/data_kain';
@@ -40,6 +42,8 @@ $route['data-stok/keluar/rekap'] = 'stok/rekapPengeluaran';
 $route['data-stok/masuk'] = 'stok/masukall';
 $route['rekapitulasi'] = 'stok/rekapPengeluaran';
 $route['rekap/setoran/reseller'] = 'stok/rekapSetoran';
+$route['mutasi/toko/gudang'] = 'mutasi/create_mutasi';
+$route['mutasi/gudang/toko'] = 'mutasi/create_mutasi';
 
 $route['tagihan'] = 'data/tagihan';
 $route['piutang'] = 'data/piutang';
@@ -71,7 +75,9 @@ $route['save-update-kain'] = 'proses/saveupdatekain';
 $route['save-pembayaran-tagihan'] = 'proses/savepembayaran';
 $route['save-pembayaran-hutang'] = 'proses/savepembayaranhutang';
 $route['akses-produsen'] = 'proses/aksesprodusen';
+
 $route['save-stokin-produk'] = 'proses/saveprodukmasuk';
+
 $route['update-kode'] = 'proses/updatekodeproduk';
 $route['save-reseller-bayar'] = 'proses2/savebayarresel';
 $route['reseller/tagihan/nota/(:any)'] = 'beranda/reseller2';

@@ -267,11 +267,22 @@ class Prosesajax extends CI_Controller
   } //end
   ///----------------------Tampilkan data stok
   function tampilkanstok(){
-        $id = $this->input->post('id');
+        $id           = $this->input->post('id');
+        $tipeShowStok = $this->input->post('tipeShowStok');
+        $kat          = $this->input->post('kat');
+        $nm           = $this->input->post('nm');
         if($id!=""){
-            $produk = $this->db->query("SELECT * FROM data_produk ORDER BY nama_produk ASC");
+            if($kat == "null" AND $nm == "null"){
+                $produk = $this->db->query("SELECT * FROM data_produk ORDER BY nama_produk ASC");
+            } else {
+                if($kat!="null" AND $nm == "null"){
+                    $produk = $this->db->query("SELECT * FROM data_produk WHERE id_kat='$kat' ORDER BY nama_produk ASC");
+                } else {
+                    $produk = $this->db->query("SELECT * FROM data_produk WHERE nama_produk LIKE '%$nm%' ORDER BY nama_produk ASC");
+                }
+            }
+            
             if($produk->num_rows() > 0){
-                
                 $no=1;
                 foreach($produk->result() as $val){
                 $id_produk = $val->id_produk;
@@ -288,16 +299,24 @@ class Prosesajax extends CI_Controller
                 }
 
                 if($id=="0"){
-                    $jml_stok = $this->db->query("SELECT COUNT(id_bar) AS jml FROM data_produk_stok WHERE id_produk = '$id_produk'")->row('jml');
+                    if($tipeShowStok=="Toko"){
+                        $jml_stok = $this->db->query("SELECT COUNT(id_bar) AS jml FROM data_produk_stok WHERE id_produk = '$id_produk'")->row('jml');
+                    } else {
+                        $jml_stok = $this->db->query("SELECT COUNT(id_bar) AS jml FROM data_produk_stok_onagen WHERE id_produk = '$id_produk' AND id_dis = '11'")->row('jml');
+                    }
                 } else {
-                    //data_produk_stok_onagen
                     $jml_stok = $this->db->query("SELECT COUNT(id_bar) AS jml FROM data_produk_stok_onagen WHERE id_produk = '$id_produk' AND id_dis = '$id'")->row('jml');
                 }
                 
                 if($jml_stok<1){$jml_stok="0";}
                 //if($jml_stok>0){ //tampilkan jika jumlah stok lebih dari nol #1
                 if($id=="0"){
-                    $ukr = $this->db->query("SELECT * FROM data_produk_stok WHERE id_produk = '$id_produk' GROUP BY kode_bar1");
+                    if($tipeShowStok=="Toko"){
+                        $ukr = $this->db->query("SELECT * FROM data_produk_stok WHERE id_produk = '$id_produk' GROUP BY kode_bar1");
+                    } else {
+                        $ukr = $this->db->query("SELECT * FROM data_produk_stok_onagen WHERE id_produk = '$id_produk' AND id_dis = '11' GROUP BY kode_bar1");
+                    }
+                    
                 } else {
                     $ukr = $this->db->query("SELECT * FROM data_produk_stok_onagen WHERE id_produk = '$id_produk' AND id_dis = '$id' GROUP BY kode_bar1");
                 }
@@ -315,6 +334,7 @@ class Prosesajax extends CI_Controller
                     $ukr_im = '<span class="text-danger">Stok Kosong</span>';
                 }
                 if($id=="0"){
+                if($jml_stok==0){} else {
             ?>
             <tr id="trid<?=$id_produk;?>">
                 <td><?=$no;?></td>
@@ -339,9 +359,10 @@ class Prosesajax extends CI_Controller
                     </div>
                 </td>
             </tr>
-            <?php $no++; 
+            <?php $no++; }
                 } else {
                     if(count($ar)>0){
+                        if($jml_stok==0){} else {
                         ?>
                         <tr>
                             <td><?=$no;?></td>
@@ -364,7 +385,7 @@ class Prosesajax extends CI_Controller
                                 </div>
                             </td>
                         </tr>
-                        <?php $no++;
+                        <?php $no++; }
                     }
                 }
                     //} //end #1
@@ -390,12 +411,17 @@ class Prosesajax extends CI_Controller
         }
   } //end showstok
 
-
   function datadis(){
-    $id = $this->input->post('id');
-    $all_stok = $this->db->query("SELECT id_bar FROM data_produk_stok")->num_rows();
+    $id             = $this->input->post('id');
+    $tipeShowStok   = $this->input->post('tipeShowStok');
     if($id=="0"){
-        echo  "STOK GUDANG (".number_format($all_stok, 0, ',', '.')." Pcs)";
+        if($tipeShowStok == "Gudang"){
+            $all_stok = $this->data_model->get_byid('data_produk_stok_onagen',['id_dis'=>11])->num_rows();
+            echo  "STOK GUDANG (".number_format($all_stok, 0, ',', '.')." Pcs)";
+        } else {
+            $all_stok   = $this->db->query("SELECT id_bar FROM data_produk_stok")->num_rows();
+            echo  "STOK TOKO (".number_format($all_stok, 0, ',', '.')." Pcs)";
+        }
     } else {
         $dis = $this->db->query("SELECT * FROM data_distributor WHERE id_dis='$id'")->row("nama_distributor");
         $all_stok = $this->data_model->get_byid('data_produk_stok_onagen',['id_dis'=>$id])->num_rows();
@@ -1201,22 +1227,23 @@ class Prosesajax extends CI_Controller
   } //end
   function sendnotes2(){
     //data: {"kode":kode,"nmproduk":nmproduk,"model":model,"ukr":ukr,"jumlah":jumlah,"codeinput":codeinput,"hpp":hpp,"hargajual":hargajual},
-    $codeinput = $this->input->post('codeinput');
-    $kode = strtoupper($this->input->post('kode'));
-    $idproduk = $this->input->post('nmproduk');
-    $nmproduk = $this->db->query("SELECT id_produk,nama_produk FROM data_produk WHERE id_produk='$idproduk'")->row("nama_produk");
-    $nmproduk = strtoupper($nmproduk);
-    $model = strtoupper($this->input->post('model'));
-    $ukr = strtoupper($this->input->post('ukr'));
-    $jumlah = preg_replace('/[^0-9]/', '', $this->input->post('jumlah'));
-    $jumlah = intval($jumlah);
-    $hpp = preg_replace('/[^0-9]/', '', $this->input->post('hpp'));
-    $hargajual = preg_replace('/[^0-9]/', '', $this->input->post('hargajual'));
-    $code_sha = $this->data_model->kodeBayar(10);
-    $truee = 1;
-    $x = explode('-',$kode);
-    $kode_bar1 = $kode;
-    $kode_bar = $x[0];
+    $codeinput  = $this->input->post('codeinput');
+    $lokasi     = $this->data_model->get_byid('data_produk_stok_masuk',['codeinput'=>$codeinput])->row("lokasi");
+    $kode       = strtoupper($this->input->post('kode'));
+    $idproduk   = $this->input->post('nmproduk');
+    $nmproduk   = $this->db->query("SELECT id_produk,nama_produk FROM data_produk WHERE id_produk='$idproduk'")->row("nama_produk");
+    $nmproduk   = strtoupper($nmproduk);
+    $model      = strtoupper($this->input->post('model'));
+    $ukr        = strtoupper($this->input->post('ukr'));
+    $jumlah     = preg_replace('/[^0-9]/', '', $this->input->post('jumlah'));
+    $jumlah     = intval($jumlah);
+    $hpp        = preg_replace('/[^0-9]/', '', $this->input->post('hpp'));
+    $hargajual  = preg_replace('/[^0-9]/', '', $this->input->post('hargajual'));
+    $code_sha   = $this->data_model->kodeBayar(10);
+    $truee      = 1;
+    $x          = explode('-',$kode);
+    $kode_bar1  = $kode;
+    $kode_bar   = $x[0];
     if($kode!="" AND $nmproduk!="" AND $model!="" AND $ukr!="" AND $jumlah!="" AND $hpp!="" AND $hargajual!=""){
         $cekproduk = $this->data_model->get_byid('data_produk_detil',['kode_bar1'=>$kode]);
         if($cekproduk->num_rows() == 0){
@@ -1237,14 +1264,30 @@ class Prosesajax extends CI_Controller
             if($cekproduk2->num_rows() == 1){
                 $kode = $cekproduk2->row("kode_bar1");
             }
-            for ($i=0; $i <$jumlah ; $i++) { 
-                $this->data_model->saved('data_produk_stok',[
-                    'id_produk'=>$idproduk,
-                    'kode_bar1'=>$kode_bar1,
-                    'harga_produk'=>$hpp,
-                    'harga_jual'=>$hargajual,
-                    'code_sha'=>$code_sha
-                ]);
+            if($lokasi=="Gudang"){
+                //Simpan ke Gudang (Agen ID 11) 
+                for ($i=0; $i <$jumlah ; $i++) { 
+                    $this->data_model->saved('data_produk_stok_onagen',[
+                        'id_produk'=>$idproduk,
+                        'kode_bar1'=>$kode_bar1,
+                        'harga_produk'=>$hpp,
+                        'harga_jual'=>$hargajual,
+                        'code_sha'=>$code_sha,
+                        'id_dis'=>11,
+                        'code_send' => $codeinput
+                    ]);
+                }
+            } else {
+                //Simpan ke Toko 
+                for ($i=0; $i <$jumlah ; $i++) { 
+                    $this->data_model->saved('data_produk_stok',[
+                        'id_produk'=>$idproduk,
+                        'kode_bar1'=>$kode_bar1,
+                        'harga_produk'=>$hpp,
+                        'harga_jual'=>$hargajual,
+                        'code_sha'=>$code_sha
+                    ]);
+                }
             }
             $datalist = ['kode_produk'=>$kode,'nama_produk'=>$nmproduk,'model'=>$model,'ukuran'=>$ukr,'jumlah'=>$jumlah,'harga_produk'=>$hpp,'harga_jual'=>$hargajual,'codeinput'=>$codeinput,'code_sha'=>$code_sha];
             $this->data_model->saved('data_produk_stok_masuk_notes',$datalist);
@@ -1256,14 +1299,30 @@ class Prosesajax extends CI_Controller
                 $_model = $cekproduk->row("warna_model");
                 $_ukr = $cekproduk->row("ukuran");
                 if($_nama_produk==$nmproduk AND $_model==$model AND $_ukr==$ukr){
-                    for ($i=0; $i <$jumlah ; $i++) { 
-                        $this->data_model->saved('data_produk_stok',[
-                            'id_produk'=>$idproduk,
-                            'kode_bar1'=>$kode_bar1,
-                            'harga_produk'=>$hpp,
-                            'harga_jual'=>$hargajual,
-                            'code_sha'=>$code_sha
-                        ]);
+                    if($lokasi=="Gudang"){
+                        //Simpan ke Gudang (Agen ID 11) 
+                        for ($i=0; $i <$jumlah ; $i++) { 
+                            $this->data_model->saved('data_produk_stok_onagen',[
+                                'id_produk'=>$idproduk,
+                                'kode_bar1'=>$kode_bar1,
+                                'harga_produk'=>$hpp,
+                                'harga_jual'=>$hargajual,
+                                'code_sha'=>$code_sha,
+                                'id_dis'=>11,
+                                'code_send' => $codeinput
+                            ]);
+                        }
+                    } else {
+                        //Simpan ke Toko 
+                        for ($i=0; $i <$jumlah ; $i++) { 
+                            $this->data_model->saved('data_produk_stok',[
+                                'id_produk'=>$idproduk,
+                                'kode_bar1'=>$kode_bar1,
+                                'harga_produk'=>$hpp,
+                                'harga_jual'=>$hargajual,
+                                'code_sha'=>$code_sha
+                            ]);
+                        }
                     }
                     $datalist = ['kode_produk'=>$kode,'nama_produk'=>$nmproduk,'model'=>$model,'ukuran'=>$ukr,'jumlah'=>$jumlah,'harga_produk'=>$hpp,'harga_jual'=>$hargajual,'codeinput'=>$codeinput,'code_sha'=>$code_sha];
                     $this->data_model->saved('data_produk_stok_masuk_notes',$datalist);
@@ -1289,7 +1348,12 @@ function showTable2(){
     $cek = $this->data_model->get_byid('data_produk_stok_masuk_notes', ['codeinput'=>$id]);
     if($cek->num_rows()>0){
         $no = 1;
+        $semuaTotalHpp=0;
+        $semuaTotalPcs=0;
         foreach($cek->result() as $val){
+            $_hpp = $val->harga_produk;
+            $_jml = $val->jumlah;
+            $_totalHpp = $_hpp * $_jml;
             echo "<tr>";
             echo "<td>".$no++."</td>";
             echo "<td>".$val->kode_produk."</td>";
@@ -1298,26 +1362,43 @@ function showTable2(){
             echo "<td>".$val->ukuran."</td>";
             echo "<td>".$val->jumlah."</td>";
             echo "<td>Rp.".number_format($val->harga_produk, 0, ",", ".")."</td>"; 
+            echo "<td>Rp.".number_format($_totalHpp, 0, ",", ".")."</td>"; 
             echo "<td>Rp.".number_format($val->harga_jual, 0, ",", ".")."</td>"; 
             ?>
             <td>
                 <a href="javascript:void(0)">
-                    <i class="fa fa-trash text-danger" onclick="hapusIn('<?=$val->idnotesin?>')"></i>
+                    <i class="fa fa-trash text-danger" onclick="hapusIn('<?=$val->idnotesin?>','<?=$id;?>')"></i>
                 </a>
             </td>
             <?php
             echo "</tr>";
+            $semuaTotalHpp += $_totalHpp;
+            $semuaTotalPcs += $_jml;
         }
+        echo '<tr class="bg-secondary text-white">';
+        echo "<th colspan='5'>Total</th>";
+        echo "<th>".number_format($semuaTotalPcs)."</th>";
+        echo "<th></th>";
+        echo "<th>Rp.".number_format($semuaTotalHpp, 0, ",", ".")."</th>"; 
+        echo "<th></th>";
+        echo "<th></th>";
+        echo "</tr>";
     }
 } //end
 
 function hapusTablke(){
-    $id = $this->input->post('id');
-    $cek = $this->data_model->get_byid('data_produk_stok_masuk_notes', ['idnotesin'=>$id]);
+    $id         = $this->input->post('id');
+    $codeinput  = $this->input->post('codeinput');
+    $lokasi     = $this->data_model->get_byid('data_produk_stok_masuk', ['codeinput'=>$codeinput])->row("lokasi");
+    $cek        = $this->data_model->get_byid('data_produk_stok_masuk_notes', ['idnotesin'=>$id]);
     if($cek->num_rows()==1){
         $codeinput = $cek->row("codeinput");
         $code_sha = $cek->row("code_sha");
-        $this->db->query("DELETE FROM data_produk_stok WHERE code_sha = '$code_sha'");
+        if($lokasi == "Toko"){
+            $this->db->query("DELETE FROM data_produk_stok WHERE code_sha = '$code_sha'");
+        } else {
+            $this->db->query("DELETE FROM data_produk_stok_onagen WHERE code_sha = '$code_sha'");
+        }
         $this->db->query("DELETE FROM data_produk_stok_masuk_notes WHERE idnotesin = '$id'");
         echo json_encode(array("statusCode"=>200, "psn"=>$codeinput));
     } else {

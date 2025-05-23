@@ -167,6 +167,28 @@ class Proses2 extends CI_Controller
             echo json_encode(array("statusCode"=>200, "produk"=>$produk, "model"=>$model,"ukr"=>$ar_ukr));
         }
     } //end function cekkodeProduk
+    function cekkodeProduk2(){
+        $id = $this->input->post('id', TRUE);
+        $cek = $this->db->query("SELECT * FROM data_produk_detil WHERE nama_produk = '$id'")->num_rows();
+        if($cek == 0){
+            echo json_encode(array("statusCode"=>503, "psn"=>"Produk tidak ditemukan!!"));
+        } else {
+            $cek = $this->db->query("SELECT * FROM data_produk_detil WHERE nama_produk = ? GROUP BY warna_model", [$id]);
+            $model = $cek->result();
+            echo json_encode(array("statusCode"=>200, "produk"=>$id, "model"=>$model));
+        }
+    }
+    function cekmodel2(){
+        $kodebar = $this->input->post('kodebar', TRUE);
+        $cek = $this->db->query("SELECT * FROM data_produk_detil WHERE kode_bar = ?", [$kodebar])->num_rows();
+        if($cek == 0){
+            echo json_encode(array("statusCode"=>503, "psn"=>"Model tidak ditemukan!!"));
+        } else {
+            $cek = $this->db->query("SELECT * FROM data_produk_detil WHERE kode_bar = ?", [$kodebar]);
+            $model = $cek->result();
+            echo json_encode(array("statusCode"=>200, "model2"=>$model));
+        }
+    }
     function carijumlahstok(){
         $id = $this->input->post('id', TRUE);
         $jumlah = $this->data_model->get_byid('data_produk_stok', ['kode_bar1'=>$id])->num_rows();
