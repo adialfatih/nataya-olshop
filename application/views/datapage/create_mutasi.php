@@ -23,7 +23,6 @@
 							</div>
 						</div>
 					</div>
-                     
                         <?php
 							if (!empty($this->session->flashdata('update'))) {
                                 echo "<div class='alert alert-warning ' role='alert'>
@@ -56,9 +55,11 @@
 						<div class="form-group row">
                             <label class="col-sm-12 col-md-2 col-form-label"><?=$jenis;?> Gudang</label>
                             <div class="col-sm-12 col-md-10">
-                                <?php if($jenis == "Kirim Ke") { ?>
+                                <?php if($jenis2 == "Kirim") { ?>
+                                <input type="hidden" id="asalKirim" value="toko">
                                 <input name="prosesid" id="prosesid" class="form-control" style="max-width:350px;" value="Toko -> Gudang" disabled />
                                 <?php } else { ?>
+                                <input type="hidden" id="asalKirim" value="gudang">
                                 <input name="prosesid" id="prosesid" class="form-control" style="max-width:350px;" value="Gudang -> Toko" disabled />
                                 <?php } ?>
                             </div>
@@ -66,17 +67,27 @@
                         <div class="form-group row">
                             <label class="col-sm-12 col-md-2 col-form-label">Tanggal <?=$jenis2;?></label>
                             <div class="col-sm-12 col-md-10">
+                                <?php if($dataProses == "null"){?>
                                 <input type="date" name="tgl" id="tglid" class="form-control" style="max-width:350px;" />
+                                <?php } else { ?>
+                                <input type="date" name="tgl" id="tglid" value="<?=$dataProses['tgl_mutasi'];?>" class="form-control" style="max-width:350px;" />
+                                <?php } ?>
                             </div>
                         </div>
                         <div class="form-group row">
                             <label class="col-sm-12 col-md-2 col-form-label">Catatan</label>
                             <div class="col-sm-12 col-md-10">
+                                <?php if($dataProses == "null"){?>
                                 <textarea name="catatan" id="catatanid" class="form-control" style="height:80px; max-width:450px;" placeholder="Masukan Catatan / Keterangan"></textarea>
+                                <?php } else { ?>
+                                <textarea name="catatan" id="catatanid" class="form-control" style="height:80px; max-width:450px;" placeholder="Masukan Catatan / Keterangan"><?=$dataProses['ket'];?></textarea>
+                                <?php } ?>
+                                
                             </div>
                         </div>
                         <span>Data produk yang di <?=strtolower($jenis2);?> :</span>
                         <div class="table-responsive" style="margin-top:10px;">
+                            <small id="loadingTables"></small>
                             <table class="table table-bordered table-hover table-full-width">
                                 <thead>
                                     <tr>
@@ -85,9 +96,10 @@
                                         <th>Model</th>
                                         <th>Ukuran</th>
                                         <th>Jumlah</th>
+                                        <th></th>
                                     </tr>
                                 </thead>
-                                <tbody>
+                                <tbody id="bodyTables">
                                     <tr>
                                         <td colspan="5">Masukan produk yang di <?=strtolower($jenis2);?></td>
                                     </tr>
@@ -126,10 +138,10 @@
                         <div class="form-group row">
                             <label class="col-sm-12 col-md-2 col-form-label">Jumlah <?=$jenis2;?></label>
                             <div class="col-sm-12 col-md-10">
-                                <input type="text" name="jumlah" id="jumlah" class="form-control" style="max-width:350px;" placeholder="Masukan jumlah" oninput="formatAngka(this)">
+                                <input type="text" name="jumlah" id="jumlah" class="form-control" style="max-width:350px;" placeholder="Masukan jumlah" oninput="formatAngka(this)" disabled>
                             </div>
                         </div>
-                        <button type="button" class="btn btn-primary">Simpan dan Tambah</button>
+                        <button type="button" class="btn btn-primary" id="idSimpanAdd">Simpan dan Tambah</button>
 					</div>
                     <!-- tampilan jika pengiriman keluar -->
                     

@@ -383,6 +383,84 @@
 				$('#tombolSubmit').hide();
 				$('#thisLoader').show();
 			} );
+			<?php if($showTable=="produkMasuk"){?>
+			function loadDataTable(){
+				$('#tableBody').html('Loading data...');
+				$.ajax({
+					url:"<?=base_url('showtable/showprodukmasuk');?>",
+					type: "POST",
+					data: {},
+					cache: false,
+					success: function(dataResult){
+						if ($.fn.DataTable.isDataTable('#table1')) {
+							$('#table1').DataTable().destroy();
+						}
+						$('#tableBody').html(dataResult);
+						$('#table1').DataTable();
+					}
+				});
+			}
+			loadDataTable();
+			<?php }
+			if($showTable=="produkKeluar"){?>
+			function loadDataTable(){
+				$('#tableBody').html('Loading data...');
+				$.ajax({
+					url:"<?=base_url('showtable/showprodukKeluar');?>",
+					type: "POST",
+					data: {},
+					cache: false,
+					success: function(dataResult){
+						if ($.fn.DataTable.isDataTable('#table1')) {
+							$('#table1').DataTable().destroy();
+						}
+						$('#tableBody').html(dataResult);
+						$('#table1').DataTable();
+					}
+				});
+			}
+			loadDataTable();
+			<?php }
+			if($showTable=="produkMutasi"){?>
+			function loadDataTable(){
+				$('#tableBody').html('Loading data...');
+				$.ajax({
+					url:"<?=base_url('showtable/showprodukMutasi');?>",
+					type: "POST",
+					data: {},
+					cache: false,
+					success: function(dataResult){
+						if ($.fn.DataTable.isDataTable('#table1')) {
+							$('#table1').DataTable().destroy();
+						}
+						$('#tableBody').html(dataResult);
+						$('#table1').DataTable();
+					}
+				});
+			}
+			loadDataTable();
+			function showDetail(cd,tipe){
+				$('#modals2311as').modal('show');
+				if(tipe == "KirimGudang"){
+					$('#myLael2311').html('<i style="color:red;" class="icon-copy bi bi-arrow-right-circle-fill"></i> &nbsp;Kirim Gudang');
+				} else {
+					$('#myLael2311').html('<i style="color:green;" class="icon-copy bi bi-arrow-left-circle-fill"></i> &nbsp;Terima Dari Gudang');
+				}
+				$('#modl11').html('<div style="width:100%;display:flex;justify-content:center;"><div class="loader"></div></div>');
+				$.ajax({
+					url:"<?=base_url('mutasi/loadBarangMutasi2');?>",
+					type: "POST",
+					data: {"codeProses":cd},
+					cache: false,
+					success: function(dataResult){
+						setTimeout(() => {
+							$('#modl11').html(dataResult);
+						}, 500);
+						
+					}
+				});
+			}
+			<?php } ?>
 		</script>
 		<noscript
 			><iframe

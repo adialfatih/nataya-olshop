@@ -53,7 +53,7 @@ $url = $this->uri->segment(1); $url2 = $this->uri->segment(2);
 								<li><a href="<?=base_url('data-stok/gudang');?>" class="<?=$url=='data-stok' && $url2=='gudang' ?'active':'';?>">Stok GUDANG</a></li>
 								<li><a href="<?=base_url('data-stok/masuk');?>" class="<?=$url=='data-stok' && $url2=='masuk' ?'active':'';?>">Stok Masuk</a></li>
 								<li><a href="<?=base_url('data-stok/keluar');?>" class="<?=$url=='data-stok' && $url2=='keluar' ?'active':'';?>">Stok Keluar</a></li>
-								<li><a href="<?=base_url('data-stok/mutasi');?>" class="<?=$url=='mutasi' ?'active':'';?>">Mutasi Stok</a></li>
+								<li><a href="<?=base_url('data-stok/mutasi');?>" <?=$url=='mutasi' ?'class="active"':'';?><?=$url=='data-stok' && $url2=='mutasi' ?'class="active"':'';?>>Mutasi Stok</a></li>
 							</ul>
 						</li>
 						<li class="dropdown">

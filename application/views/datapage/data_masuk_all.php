@@ -47,9 +47,10 @@
 					<!-- Simple Datatable start -->
 					<div class="card-box mb-30">
 						<div class="pd-20 table-responsive">
-                            <table class="data-table table stripe hover nowrap">
+                            <table class="data-table table stripe hover nowrap" id="table1">
 								<thead>
 									<tr>
+                                        <th>NO</th>
                                         <th>SJ</th>
 										<th>PENGIRIM</th>
 										<th>TANGGAL DITERIMA</th>
@@ -59,42 +60,10 @@
                                         <th>#</th>
 									</tr>
 								</thead>
-								<tbody>
-                                    <?php
-                                    if($inData->num_rows()>0){
-                                        $no=1;
-                                        foreach($inData->result() as $val){ 
-                                        $printTgl = date('d M Y', strtotime($val->tgl_masuk));
-                                        $sendCode = $val->codeinput;
-                                        $jml = $this->db->query("SELECT SUM(jumlah) AS jml FROM data_produk_stok_masuk_notes WHERE codeinput='$sendCode'")->row('jml');
-                                        $idprodusen = $val->id_produsen;
-                                        $nm_produsen = $this->data_model->get_byid('data_produsen', ['id_produsen'=>$idprodusen])->row('nama_produsen');
-                                    ?>
+								<tbody id="tableBody">
                                     <tr>
-                                        <td><?=strtoupper($val->suratjalan);?></td>
-                                        <td><?=$nm_produsen;?></td>
-                                        <td><?=$printTgl;?></td>
-                                        <td><?=number_format($jml,0,',','.');?></td>
-                                        <td>Rp.<?=number_format($val->total_nilai_barang,0,',','.');?></td>
-                                        <td><?=strtoupper($val->yg_input);?></td>
-                                        
-                                        <td>
-                                            <div class="dropdown">
-											    <a class="btn btn-link font-24 p-0 line-height-1 no-arrow dropdown-toggle" href="#" role="button" data-toggle="dropdown">
-													<i class="dw dw-more"></i>
-												</a>
-												<div class="dropdown-menu dropdown-menu-right dropdown-menu-icon-list">
-													<a class="dropdown-item" href="<?=base_url('data-stok/masuk/');?><?=$sendCode;?>"><i class="dw dw-eye"></i> Lihat Selengkapnya</a>
-													<a class="dropdown-item" href="#"><i class="bi bi-trash" style="color:red;"></i> Hapus Data</a>
-												</div>
-											</div>
-                                        </td>
-                                    </tr>
-                                            <?php
-                                            $no++;
-                                        } //enf foreach
-                                    } //end if 
-                                    ?>
+										<td colspan="7">Loading data....</td>
+									</tr>
 								</tbody>
 							</table>
 						</div>

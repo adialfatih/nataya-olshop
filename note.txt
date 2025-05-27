@@ -98,3 +98,5 @@ WHERE stok_produk_keluar.send_code=stok_produk_keluar_barang.send_code
 ALTER TABLE `data_produk_stok` ADD `loc` VARCHAR(30) NOT NULL DEFAULT 'Toko' AFTER `code_sha`;
 ALTER TABLE `data_produk_stok_masuk` ADD `lokasi` VARCHAR(10) NOT NULL DEFAULT 'Toko' AFTER `codeinput`;
 add table newtb_mutasi
+add table newtb_mutasi_data
+ALTER TABLE `newtb_mutasi_data` ADD `jmldatas` INT(11) NOT NULL AFTER `datas`;

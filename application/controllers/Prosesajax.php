@@ -338,7 +338,8 @@ class Prosesajax extends CI_Controller
             ?>
             <tr id="trid<?=$id_produk;?>">
                 <td><?=$no;?></td>
-                <td><img src="<?=$url_gbr;?>" alt="<?=$alt_gbr;?>" style="width:80px;height:80px;"></td>
+                <?php if($cek_gambar==0){ echo "<td><code>No Image</code></td>"; } else { ?> 
+                <td><img src="<?=$url_gbr;?>" alt="<?=$alt_gbr;?>" style="width:80px;height:80px;"></td><?php } ?>
                 <td><?=$val->nama_produk;?></td>
                 <td><?=$ukr_im;?></td>
                 <td class="<?=$jml_stok=='0' ?'text-danger':'';?>"><?=number_format($jml_stok, 0, '', '.').' '.$satuan;?></td>
@@ -366,7 +367,8 @@ class Prosesajax extends CI_Controller
                         ?>
                         <tr>
                             <td><?=$no;?></td>
-                            <td><img src="<?=$url_gbr;?>" alt="<?=$alt_gbr;?>" style="width:80px;height:80px;"></td>
+                            <?php if($cek_gambar==0){ echo "<td><code>No Image</code></td>"; } else { ?> 
+                            <td><img src="<?=$url_gbr;?>" alt="<?=$alt_gbr;?>" style="width:80px;height:80px;"></td><?php } ?>
                             <td><?=$val->nama_produk;?></td>
                             <td><?=$ukr_im;?></td>
                             <td class="<?=$jml_stok=='0' ?'text-danger':'';?>"><?=number_format($jml_stok, 0, '', '.').' '.$satuan;?></td>

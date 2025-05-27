@@ -40,10 +40,15 @@ $route['stok/kirim/reseller/(:any)'] = 'stok/send_reseller';
 $route['data-stok/keluar'] = 'stok/keluarall';
 $route['data-stok/keluar/rekap'] = 'stok/rekapPengeluaran';
 $route['data-stok/masuk'] = 'stok/masukall';
+$route['data-stok/mutasi'] = 'stok/mutasiall';
 $route['rekapitulasi'] = 'stok/rekapPengeluaran';
 $route['rekap/setoran/reseller'] = 'stok/rekapSetoran';
+
 $route['mutasi/toko/gudang'] = 'mutasi/create_mutasi';
 $route['mutasi/gudang/toko'] = 'mutasi/create_mutasi';
+
+$route['mutasi/toko/gudang/(:any)'] = 'mutasi/create_mutasi';
+$route['mutasi/gudang/toko/(:any)'] = 'mutasi/create_mutasi';
 
 $route['tagihan'] = 'data/tagihan';
 $route['piutang'] = 'data/piutang';

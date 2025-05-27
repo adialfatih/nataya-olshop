@@ -51,8 +51,28 @@
                         ?>
 					<!-- Simple Datatable start -->
 					<div class="card-box mb-30">
+						<div style="width:100%;display:flex;align-items:center;padding:20px 20px 0 20px;gap:10px;">
+                            <span>Tampilkan Tujuan : </span>
+                            <select name="kategori" onchange="lookData()" id="kategori90" class="form-control" style="width:200px;" onchange="changeSelectKategori(this.value)">
+                                <option value="null" >--Pilih Tujuan--</option>
+                                    <option value="Agen">Agen</option>
+                                    <option value="Reseller">Reseller</option>
+                                    <option value="Customer">Customer</option>
+                                </select>
+                            <span>Cari Nama : </span>
+                            <div class="form-label" style="width:300px;">
+								<div class="autoComplete_wrapper" style="width:300px;">
+									<input id="autoComplete" onchange="lookData()" style="width:300px;" type="search" dir="ltr" spellcheck=false autocorrect="off" autocomplete="off" name="kodeproduk" autocapitalize="off" required>
+								</div>
+							</div>
+							<span>Atau tampilkan tanggal : </span>
+                            <div class="form-label" style="width:300px;">
+								<input class="form-control"id="thisTegel" type="date" onchange="lookData()">
+							</div>
+                        </div>
 						<div class="pd-20 table-responsive">
-                            <table class="data-table table stripe hover nowrap">
+							<p>Menampilkan data keluar tanggal <?=date('d M Y', strtotime(date('Y-m-d')));?></p>
+                            <table class="data-table table stripe hover nowrap" id="table1">
 								<thead>
 									<tr>
                                         <th>SJ</th>
@@ -66,62 +86,8 @@
                                         <th>#</th>
 									</tr>
 								</thead>
-								<tbody>
-                                    <?php
-                                    if($inData->num_rows()>0){
-                                        $no=1;
-                                        foreach($inData->result() as $val){ 
-                                        $printTgl = date('d M Y', strtotime($val->tgl_out));
-                                        $sendCode = $val->send_code;
-                                        $jml = $this->data_model->get_byid('stok_produk_keluar_barang', ['send_code'=>$sendCode])->num_rows();
-                                        if($val->tujuan == "Reseller"){
-                                            $urltolink = "".base_url()."stok/kirim/reseller/".$sendCode."";
-                                        } elseif($val->tujuan == "Agen"){
-                                            $urltolink = "".base_url()."stok/kirim/agen/".$sendCode."";
-                                        } else {
-                                            $urltolink = "".base_url()."stok/kirim/customer/".$sendCode."";
-                                        }
-                                            ?>
-                                    <tr>
-                                        <td><?=$val->no_sj;?></td>
-                                        <td><?=$val->tujuan;?></td>
-                                        <td><?=$val->nama_tujuan;?></td>
-                                        <td><?=$printTgl;?></td>
-                                        <td><?=number_format($jml,0,',','.');?></td>
-                                        <td>Rp.<?=number_format($val->nilai_tagihan,0,',','.');?></td>
-                                        <td>
-                                            <?php if($val->status_lunas == 'Belum Lunas'){?>
-                                                <span class="badge badge-danger">Belum</span>
-                                            <?php } elseif($val->status_lunas == 'Lunas'){?>
-                                                <span class="badge badge-success">Lunas</span>    
-                                            <?php } ?>
-                                        </td>
-                                        <td>
-                                            <?php
-                                            if($val->status_kirim == "kirim"){
-                                                echo '<i class="icon-copy bi bi-check-circle-fill" style="color:#389c03;" title="Terkirim"></i>';
-                                            } else {
-                                                echo '<i class="icon-copy bi bi-bootstrap-reboot" style="color:#e30031;" title="Retur"></i>';
-                                            }
-                                            ?>
-                                        </td>
-                                        <td>
-                                            <div class="dropdown">
-											    <a class="btn btn-link font-24 p-0 line-height-1 no-arrow dropdown-toggle" href="#" role="button" data-toggle="dropdown">
-													<i class="dw dw-more"></i>
-												</a>
-												<div class="dropdown-menu dropdown-menu-right dropdown-menu-icon-list">
-													<a class="dropdown-item" href="<?=$urltolink;?>"><i class="dw dw-eye"></i> Lihat Selengkapnya</a>
-													<a class="dropdown-item" href="#"><i class="bi bi-bootstrap-reboot"></i> Retur Barang</a>
-												</div>
-											</div>
-                                        </td>
-                                    </tr>
-                                            <?php
-                                            $no++;
-                                        } //enf foreach
-                                    } //end if 
-                                    ?>
+								<tbody id="tableBody">
+                                    <tr><td colspan="9">Loading data....</td></tr>
 								</tbody>
 							</table>
 						</div>

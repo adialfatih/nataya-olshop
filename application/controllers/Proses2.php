@@ -189,6 +189,36 @@ class Proses2 extends CI_Controller
             echo json_encode(array("statusCode"=>200, "model2"=>$model));
         }
     }
+
+    function cekmodelAndStok(){
+        $kodebar   = $this->input->post('kodebar', TRUE);
+        $ukr       = $this->input->post('ukr', TRUE);
+        $nmProduk  = $this->input->post('nmProduk', TRUE);
+        $kodebar1  = $this->input->post('kodebar1', TRUE);
+        $asalKirim = $this->input->post('asalKirim', TRUE);
+        if($asalKirim == "toko"){
+            $cekStok = $this->data_model->get_byid('data_produk_stok', ['kode_bar1'=>$ukr])->num_rows();
+            if($cekStok > 0){
+                $vartxt = "Stok di toko : <strong>".$cekStok."</strong> Pcs";
+                echo json_encode(array("statusCode"=>200, "psn"=>$vartxt));
+            } else {
+                echo json_encode(array("statusCode"=>500, "psn"=>"Stok Tidak ditemukan di Toko"));
+            }
+        } else {
+            if($asalKirim=="gudang"){
+                $cekStok = $this->data_model->get_byid('data_produk_stok_onagen', ['kode_bar1'=>$ukr,'id_dis'=>11])->num_rows();
+                if($cekStok > 0){
+                    $vartxt = "Stok di gudang : <strong>".$cekStok."</strong> Pcs";
+                    echo json_encode(array("statusCode"=>200, "psn"=>$vartxt));
+                } else {
+                    echo json_encode(array("statusCode"=>500, "psn"=>"Stok Tidak ditemukan di Gudang"));
+                }
+            } else {
+                //jika tidak dikrim dari toko/gudang
+                echo json_encode(array("statusCode"=>500, "psn"=>"Error : 233"));
+            }
+        }
+    }
     function carijumlahstok(){
         $id = $this->input->post('id', TRUE);
         $jumlah = $this->data_model->get_byid('data_produk_stok', ['kode_bar1'=>$id])->num_rows();

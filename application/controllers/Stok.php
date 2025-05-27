@@ -149,13 +149,15 @@ class Stok extends CI_Controller
             'sess_akses' => $this->session->userdata('akses'),
             'setup' => $setup,
             'daterange' => 'one',
-            'inData' => $this->data_model->sort_record('tgl_out','stok_produk_keluar')
+            'showTable' => 'produkKeluar',
+            'autocomplet' => 'produkKeluar'
         );
+        //'inData' => $this->data_model->sort_record('tgl_out','stok_produk_keluar')
         $this->load->view('part/main_head', $data);
         $this->load->view('part/left_sidebar', $data);
         $this->load->view('datapage/data_keluar_all', $data);
-        $this->load->view('part/main_jsdtable');
-    } //end-keluarall
+        $this->load->view('part/main_js4');
+    } //end-keluarall-
     
     function masukall(){
         $setup = $this->data_model->get_byid('table_settings', ['id_setup'=>1])->row_array();
@@ -167,13 +169,33 @@ class Stok extends CI_Controller
             'sess_password' => $this->session->userdata('password'),
             'sess_akses' => $this->session->userdata('akses'),
             'setup' => $setup,
-            'inData' => $this->data_model->sort_record('tgl_masuk','data_produk_stok_masuk')
+            'showTable' => 'produkMasuk',
+            'autocomplet' => 'produkMasuk'
         );
+        //'inData' => $this->data_model->sort_record('tgl_masuk','data_produk_stok_masuk')
         $this->load->view('part/main_head', $data);
         $this->load->view('part/left_sidebar', $data);
         $this->load->view('datapage/data_masuk_all', $data);
         $this->load->view('part/main_jsdtable');
     } //end-masukall
+    
+    function mutasiall(){
+        $setup = $this->data_model->get_byid('table_settings', ['id_setup'=>1])->row_array();
+        $data = array(
+            'title' => 'Data Mutasi Stok Produk',
+            'sess_nama' => $this->session->userdata('nama'),
+            'sess_id' => $this->session->userdata('id'),
+            'sess_username' => $this->session->userdata('username'),
+            'sess_password' => $this->session->userdata('password'),
+            'sess_akses' => $this->session->userdata('akses'),
+            'setup' => $setup,
+            'showTable' => 'produkMutasi'
+        );
+        $this->load->view('part/main_head', $data);
+        $this->load->view('part/left_sidebar', $data);
+        $this->load->view('datapage/data_mutasi_all', $data);
+        $this->load->view('part/main_jsdtable');
+    } //end-mutasiall
     
     function send_customer(){
         $uri = $this->uri->segment(4);
