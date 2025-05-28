@@ -402,25 +402,6 @@
 			}
 			loadDataTable();
 			<?php }
-			if($showTable=="produkKeluar"){?>
-			function loadDataTable(){
-				$('#tableBody').html('Loading data...');
-				$.ajax({
-					url:"<?=base_url('showtable/showprodukKeluar');?>",
-					type: "POST",
-					data: {},
-					cache: false,
-					success: function(dataResult){
-						if ($.fn.DataTable.isDataTable('#table1')) {
-							$('#table1').DataTable().destroy();
-						}
-						$('#tableBody').html(dataResult);
-						$('#table1').DataTable();
-					}
-				});
-			}
-			loadDataTable();
-			<?php }
 			if($showTable=="produkMutasi"){?>
 			function loadDataTable(){
 				$('#tableBody').html('Loading data...');

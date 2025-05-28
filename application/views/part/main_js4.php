@@ -10,8 +10,77 @@
 		<script src="<?=base_url('assets2/');?>autoComplete.min.js"></script>
         <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11.10.0/dist/sweetalert2.all.min.js" integrity="sha256-IW9RTty6djbi3+dyypxajC14pE6ZrP53DLfY9w40Xn4=" crossorigin="anonymous"></script>
 		<script>
+			
+			<?php if($showTable=="produkKeluar"){ ?>
+			function loadDataTable(tgl,tipe,nama){
+				$('#tableBody').html('Loading data...');
+				$.ajax({
+					url:"<?=base_url('showtable/showprodukKeluar');?>",
+					type: "POST",
+					data: {"tgl":tgl,"tipe":tipe,"nama":nama},
+					cache: false,
+					success: function(dataResult){
+						if ($.fn.DataTable.isDataTable('#table1')) {
+							$('#table1').DataTable().destroy();
+						}
+						$('#tableBody').html(dataResult);
+						$('#table1').DataTable();
+					}
+				});
+				$.ajax({
+					url:"<?=base_url('showtable/showprodukKeluar2');?>",
+					type: "POST",
+					data: {"tgl":tgl,"tipe":tipe,"nama":nama},
+					cache: false,
+					success: function(dataResult){
+						$('#paragraphShow').html(dataResult);
+					}
+				});
+			}
+			loadDataTable('null','null','null');
+			function lookData(){
+				var tipe = document.getElementById('kategori90').value;
+				var nama = document.getElementById('autoComplete').value;
+				var tgl = document.getElementById('thisTegel').value;
+				loadDataTable(tgl,tipe,nama);
+			}
+			<?php } if($showTable=="produkMasuk"){?>
+			function loadDataTable(nama,tgl){
+				$('#tableBody').html('Loading data...');
+				$.ajax({
+					url:"<?=base_url('showtable/showprodukmasuk');?>",
+					type: "POST",
+					data: {"nama":nama,"tgl":tgl},
+					cache: false,
+					success: function(dataResult){
+						if ($.fn.DataTable.isDataTable('#table1')) {
+							$('#table1').DataTable().destroy();
+						}
+						$('#tableBody').html(dataResult);
+						$('#table1').DataTable();
+					}
+				});
+				$.ajax({
+					url:"<?=base_url('showtable/showprodukmasuk2');?>",
+					type: "POST",
+					data: {"nama":nama,"tgl":tgl},
+					cache: false,
+					success: function(dataResult){
+						$('#paragraphShow').html(dataResult);
+					}
+				});
+			}
+			loadDataTable('null','null');
+			function lookData(){
+				var nama = document.getElementById('autoComplete').value;
+				var tgl = document.getElementById('thisTegel').value;
+				loadDataTable(nama,tgl);
+			}
+			<?php } ?>
+
+			
 			const autoCompleteJS = new autoComplete({
-                placeHolder: "Ketik kode",
+                placeHolder: "Ketikan Nama ",
                 data: {
                     src: ["tes","tes2"],
                     cache: true,
@@ -29,32 +98,6 @@
                     }
                 }
             });
-			<?php
-			if($showTable=="produkKeluar"){?>
-			function loadDataTable(tgl,tipe,nama){
-				$('#tableBody').html('Loading data...');
-				$.ajax({
-					url:"<?=base_url('showtable/showprodukKeluar');?>",
-					type: "POST",
-					data: {"tgl":tgl,"tipe":tipe,"nama":nama},
-					cache: false,
-					success: function(dataResult){
-						if ($.fn.DataTable.isDataTable('#table1')) {
-							$('#table1').DataTable().destroy();
-						}
-						$('#tableBody').html(dataResult);
-						$('#table1').DataTable();
-					}
-				});
-			}
-			loadDataTable('null','null','null');
-			function lookData(){
-				var tipe = document.getElementById('kategori90').value;
-				var nama = document.getElementById('autoComplete').value;
-				var tgl = document.getElementById('thisTegel').value;
-				loadDataTable(tgl,tipe,nama);
-			}
-			<?php } ?>
 		</script>
 		<noscript
 			><iframe

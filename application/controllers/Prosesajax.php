@@ -271,6 +271,7 @@ class Prosesajax extends CI_Controller
         $tipeShowStok = $this->input->post('tipeShowStok');
         $kat          = $this->input->post('kat');
         $nm           = $this->input->post('nm');
+        if($tipeShowStok=="Toko"){ $tipeShowStokID="1"; } else { $tipeShowStokID="2"; }
         if($id!=""){
             if($kat == "null" AND $nm == "null"){
                 $produk = $this->db->query("SELECT * FROM data_produk ORDER BY nama_produk ASC");
@@ -349,7 +350,7 @@ class Prosesajax extends CI_Controller
                             <i class="dw dw-more"></i>
                         </a>
                         <div class="dropdown-menu dropdown-menu-right dropdown-menu-icon-list">
-                            <a class="dropdown-item" href="<?=base_url('product/'.$codeunik.'/id');?><?='/'.$id.'';?>"><i class="dw dw-eye"></i> View
+                            <a class="dropdown-item" target="_blank" href="<?=base_url('product/'.$codeunik.'/id');?><?='/'.$id.'/'.$tipeShowStokID;?>"><i class="dw dw-eye"></i> View
                             </a>
                             <?php if($_ada == "no"){?>
                             <a class="dropdown-item" href="javascript:void(0);" style="color:red;" onclick="hapusProduk('<?=$val->nama_produk;?>','<?=$id_produk;?>')">
@@ -378,7 +379,7 @@ class Prosesajax extends CI_Controller
                                         <i class="dw dw-more"></i>
                                     </a>
                                     <div class="dropdown-menu dropdown-menu-right dropdown-menu-icon-list">
-                                        <a class="dropdown-item" href="<?=base_url('product/'.$codeunik.'/id');?><?='/'.$id.'';?>"><i class="dw dw-eye"></i> View
+                                        <a class="dropdown-item" target="_blank" href="<?=base_url('product/'.$codeunik.'/id');?><?='/'.$id.'/'.$tipeShowStokID;?>"><i class="dw dw-eye"></i> View
                                         </a>
                                         <a class="dropdown-item" href="javascript:void(0);">
                                             <i class="bi bi-send" style="color:blue;"></i> Kirim Produk

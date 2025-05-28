@@ -16,8 +16,32 @@ class Showtable extends CI_Controller
             echo 'Invalid token';
     } //end-
     function showprodukmasuk(){
-        $inData = $this->data_model->sort_record('tgl_masuk','data_produk_stok_masuk');
-        //$inData = $this->db->query("SELECT * FROM data_produk_stok_masuk ORDER BY tgl_masuk DESC LIMIT 500");
+        $tgl = $this->input->post('tgl', TRUE);
+        $nama = strtolower($this->input->post('nama', TRUE));
+        if($tgl==""){$tgl="null";}
+        if($nama==""){$nama="null";} else { 
+            $nama1=$this->db->query("SELECT id_produsen,nama_produsen FROM data_produsen WHERE nama_produsen='$nama'");
+            if($nama1->num_rows() == 1){
+                $nama=$nama1->row('id_produsen');
+            } else {
+                $nama="null";
+            }
+        }
+        $nowDte = date('Y-m-d');
+        if($tgl=="null" AND $nama=="null"){
+            $qry = "SELECT * FROM data_produk_stok_masuk WHERE tgl_masuk='$nowDte' ORDER BY idstok_in DESC";
+        } else {
+            if($tgl=="null" AND $nama!="null"){
+                $qry = "SELECT * FROM data_produk_stok_masuk WHERE tgl_masuk='$nowDte' AND id_produsen='$nama' ORDER BY idstok_in DESC";
+            }
+            if($tgl!="null" AND $nama=="null"){
+                $qry = "SELECT * FROM data_produk_stok_masuk WHERE tgl_masuk='$tgl' ORDER BY idstok_in DESC";
+            }
+            if($tgl!="null" AND $nama!="null"){
+                $qry = "SELECT * FROM data_produk_stok_masuk WHERE tgl_masuk='$tgl' AND id_produsen='$nama' ORDER BY idstok_in DESC";
+            }
+        }
+        $inData = $this->db->query($qry);
         if($inData->num_rows()>0){
             $no=1;
             foreach($inData->result() as $val){ 
@@ -53,11 +77,48 @@ class Showtable extends CI_Controller
             } //enf foreach
         } //end if 
     } //end menampilkan produk masuk
+    function showprodukmasuk2(){
+        $tgl = $this->input->post('tgl', TRUE);
+        $nama = strtolower($this->input->post('nama', TRUE));
+        $nama2 = ucwords($this->input->post('nama', TRUE));
+        if($tgl==""){$tgl="null";}
+        if($nama==""){$nama="null";} else { 
+            $nama1=$this->db->query("SELECT id_produsen,nama_produsen FROM data_produsen WHERE nama_produsen='$nama'");
+            if($nama1->num_rows() == 1){
+                $nama=$nama1->row('id_produsen');
+            } else {
+                if($nama=="null"){$txt=="";} else {
+                $txt = "<font style='color:red;'>".$nama2." tidak ditemukan.!</font>";}
+                $nama="null";
+            }
+        }
+        $nowDte = date('Y-m-d');
+        if($tgl=="null" AND $nama=="null"){
+            //$qry = "SELECT * FROM data_produk_stok_masuk WHERE tgl_masuk='$nowDte' ORDER BY idstok_in DESC";
+            $txtnotif = "Menampilkan data masuk tanggal <strong>".date('d M Y', strtotime($nowDte))."</strong> ".$txt;
+        } else {
+            if($tgl=="null" AND $nama!="null"){
+                //$qry = "SELECT * FROM data_produk_stok_masuk WHERE tgl_masuk='$nowDte' AND id_produsen='$nama' ORDER BY idstok_in DESC";
+                $txtnotif = "Menampilkan data masuk tanggal <strong>".date('d M Y', strtotime($nowDte))."</strong> dari produsen <strong>".$nama2."</strong> ".$txt;
+            }
+            if($tgl!="null" AND $nama=="null"){
+                //$qry = "SELECT * FROM data_produk_stok_masuk WHERE tgl_masuk='$tgl' ORDER BY idstok_in DESC";
+                $txtnotif = "Menampilkan data masuk tanggal <strong>".date('d M Y', strtotime($tgl))."</strong> ".$txt;
+            }
+            if($tgl!="null" AND $nama!="null"){
+                //$qry = "SELECT * FROM data_produk_stok_masuk WHERE tgl_masuk='$tgl' AND id_produsen='$nama' ORDER BY idstok_in DESC";
+                $txtnotif = "Menampilkan data masuk tanggal <strong>".date('d M Y', strtotime($tgl))."</strong> dari produsen <strong>".$nama2."</strong> ".$txt;
+            }
+        }
+        echo "".$txtnotif;
+    } //end menampilkan produk masuk
     
     function showprodukKeluar(){
         $tgl = $this->input->post('tgl', TRUE);
         $tipe = $this->input->post('tipe', TRUE);
         $nama = $this->input->post('nama', TRUE);
+        if($nama==""){$nama="null";}
+        if($tgl==""){$tgl="null";}
         $nowDte = date('Y-m-d');
         if($tgl=="null"){
             if($tipe=="null" AND $nama=="null"){
@@ -143,6 +204,52 @@ class Showtable extends CI_Controller
                 $no++;
             } //enf foreach
         } //end if 
+    } //end menampilkan produk keluar
+    function showprodukKeluar2(){
+        $tgl = $this->input->post('tgl', TRUE);
+        $tipe = $this->input->post('tipe', TRUE);
+        $nama = $this->input->post('nama', TRUE);
+        $nowDte = date('Y-m-d');
+        if($nama==""){$nama="null";}
+        if($tgl==""){$tgl="null";}
+        if($tgl=="null"){
+            if($tipe=="null" AND $nama=="null"){
+                $qry = "SELECT * FROM stok_produk_keluar WHERE tgl_out='$nowDte' ORDER BY id_outstok DESC";
+                $txt = "Menampilkan data keluar tanggal <strong>".date('d M Y', strtotime(date('Y-m-d')))."</strong>";
+            } else {
+                if($tipe=="null" AND $nama!="null"){
+                    $qry = "SELECT * FROM stok_produk_keluar WHERE tgl_out='$nowDte' AND nama_tujuan LIKE '$nama' ORDER BY id_outstok DESC";
+                    $txt = "Menampilkan data keluar tanggal <strong>".date('d M Y', strtotime(date('Y-m-d')))."</strong> pengiriman ke <strong>".$nama."</strong>";
+                }
+                if($tipe!="null" AND $nama=="null"){
+                    $qry = "SELECT * FROM stok_produk_keluar WHERE tgl_out='$nowDte' AND tujuan LIKE '$tipe' ORDER BY id_outstok DESC";
+                    $txt = "Menampilkan data keluar tanggal <strong>".date('d M Y', strtotime(date('Y-m-d')))."</strong> untuk tujuan <strong>".$tipe."</strong>";
+                }
+                if($tipe!="null" AND $nama!="null"){
+                    $qry = "SELECT * FROM stok_produk_keluar WHERE tgl_out='$nowDte' AND tujuan LIKE '$tipe' AND nama_tujuan LIKE '%$nama%' ORDER BY id_outstok DESC";
+                    $txt = "Menampilkan data keluar tanggal ".date('d M Y', strtotime(date('Y-m-d')))."</strong> untuk tujuan <strong>".$tipe."</strong> dan pengiriman ke <strong>".$nama."</strong>";
+                }
+            }
+        } else {
+            if($tipe=="null" AND $nama=="null"){
+                $qry = "SELECT * FROM stok_produk_keluar WHERE tgl_out='$tgl' ORDER BY id_outstok DESC";
+                $txt = "Menampilkan data keluar tanggal <strong>".date('d M Y', strtotime($tgl))."</strong>";
+            } else {
+                if($tipe=="null" AND $nama!="null"){
+                    $qry = "SELECT * FROM stok_produk_keluar WHERE tgl_out='$tgl' AND nama_tujuan LIKE '$nama' ORDER BY id_outstok DESC";
+                    $txt = "Menampilkan data keluar tanggal <strong>".date('d M Y', strtotime($tgl))."</strong> pengiriman ke <strong>".$nama."</strong>";
+                }
+                if($tipe!="null" AND $nama=="null"){
+                    $qry = "SELECT * FROM stok_produk_keluar WHERE tgl_out='$tgl' AND tujuan LIKE '$tipe' ORDER BY id_outstok DESC";
+                    $txt = "Menampilkan data keluar tanggal <strong>".date('d M Y', strtotime($tgl))."</strong> untuk tujuan <strong>".$tipe."</strong>";
+                }
+                if($tipe!="null" AND $nama!="null"){
+                    $qry = "SELECT * FROM stok_produk_keluar WHERE tgl_out='$tgl' AND tujuan LIKE '$tipe' AND nama_tujuan LIKE '%$nama%' ORDER BY id_outstok DESC";
+                    $txt = "Menampilkan data keluar tanggal <strong>".date('d M Y', strtotime($tgl))."</strong> untuk tujuan <strong>".$tipe."</strong> dan pengiriman ke <strong>".$nama."</strong>";
+                }
+            }
+        }
+        echo $txt;
     } //end menampilkan produk keluar
 
     function showprodukMutasi(){

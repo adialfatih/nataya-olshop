@@ -17,6 +17,7 @@ $route['product/data-stok'] = 'data/product_stok';
 $route['product/data-stok/(:any)'] = 'data/product_stok2';
 $route['product/(:any)'] = 'beranda/product_byid';
 $route['product/(:any)/id/(:any)'] = 'beranda/product_byid';
+$route['product/(:any)/id/(:any)/(:any)'] = 'beranda/product_byid';
 $route['product/update/(:any)'] = 'beranda/product_update';
 $route['distributor'] = 'beranda/distributor';
 $route['reseller'] = 'beranda/reseller';

@@ -170,13 +170,14 @@ class Stok extends CI_Controller
             'sess_akses' => $this->session->userdata('akses'),
             'setup' => $setup,
             'showTable' => 'produkMasuk',
-            'autocomplet' => 'produkMasuk'
+            'autocomplet' => 'produkMasuk',
+            'produsen' => $this->db->query("SELECT nama_produsen FROM data_produsen ORDER BY nama_produsen ASC")
         );
         //'inData' => $this->data_model->sort_record('tgl_masuk','data_produk_stok_masuk')
         $this->load->view('part/main_head', $data);
         $this->load->view('part/left_sidebar', $data);
         $this->load->view('datapage/data_masuk_all', $data);
-        $this->load->view('part/main_jsdtable');
+        $this->load->view('part/main_js4',$data);
     } //end-masukall
     
     function mutasiall(){

@@ -46,7 +46,32 @@
                         ?>
 					<!-- Simple Datatable start -->
 					<div class="card-box mb-30">
+						<div style="width:100%;display:flex;align-items:center;padding:20px;gap:10px;background:#dedede;border-radius:10px 10px 0 0;">
+                            <div style="display:flex;flex-direction:column;">
+								<span>Cari Berdasarkan Pengirim : </span>
+								<div class="form-label" style="width:300px;">
+									<!-- <div class="autoComplete_wrapper" style="width:300px;">
+										<input id="autoComplete" onchange="lookData()" style="width:300px;" type="search" dir="ltr" spellcheck=false autocorrect="off" autocomplete="off" name="kodeproduk" autocapitalize="off" required>
+									</div> -->
+									<select name="produsen" id="autoComplete" class="form-control" style="width:300px;" onchange="lookData()">
+									<option value="null">Pilih Produsen</option>
+									<?php
+									foreach($produsen->result() as $p){
+										echo "<option value='".$p->nama_produsen."'>".$p->nama_produsen."</option>";
+									}
+									?>
+									</select>
+								</div>
+							</div>
+							<div style="display:flex;flex-direction:column;">
+								<span>Tampilkan Tanggal : </span>
+								<div class="form-label" style="width:300px;">
+									<input class="form-control"id="thisTegel" type="date" onchange="lookData()">
+								</div>
+							</div>
+                        </div>
 						<div class="pd-20 table-responsive">
+							<p id="paragraphShow">Menampilkan data masuk tanggal <?=date('d M Y', strtotime(date('Y-m-d')));?></p>
                             <table class="data-table table stripe hover nowrap" id="table1">
 								<thead>
 									<tr>

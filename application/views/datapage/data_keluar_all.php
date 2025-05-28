@@ -51,27 +51,33 @@
                         ?>
 					<!-- Simple Datatable start -->
 					<div class="card-box mb-30">
-						<div style="width:100%;display:flex;align-items:center;padding:20px 20px 0 20px;gap:10px;">
-                            <span>Tampilkan Tujuan : </span>
-                            <select name="kategori" onchange="lookData()" id="kategori90" class="form-control" style="width:200px;" onchange="changeSelectKategori(this.value)">
+						<div style="width:100%;display:flex;align-items:center;padding:20px;gap:10px;background:#dedede;border-radius:10px 10px 0 0;">
+							<div style="display:flex;flex-direction:column;">
+								<span>Tampilkan Tujuan : </span>
+                            	<select name="kategori" onchange="lookData()" id="kategori90" class="form-control" style="width:200px;" onchange="changeSelectKategori(this.value)">
                                 <option value="null" >--Pilih Tujuan--</option>
                                     <option value="Agen">Agen</option>
                                     <option value="Reseller">Reseller</option>
                                     <option value="Customer">Customer</option>
                                 </select>
-                            <span>Cari Nama : </span>
-                            <div class="form-label" style="width:300px;">
-								<div class="autoComplete_wrapper" style="width:300px;">
-									<input id="autoComplete" onchange="lookData()" style="width:300px;" type="search" dir="ltr" spellcheck=false autocorrect="off" autocomplete="off" name="kodeproduk" autocapitalize="off" required>
+							</div>
+                            <div style="display:flex;flex-direction:column;">
+								<span>Cari Nama : </span>
+								<div class="form-label" style="width:300px;">
+									<div class="autoComplete_wrapper" style="width:300px;">
+										<input id="autoComplete" onchange="lookData()" style="width:300px;" type="search" dir="ltr" spellcheck=false autocorrect="off" autocomplete="off" name="kodeproduk" autocapitalize="off" required>
+									</div>
 								</div>
 							</div>
-							<span>Atau tampilkan tanggal : </span>
-                            <div class="form-label" style="width:300px;">
-								<input class="form-control"id="thisTegel" type="date" onchange="lookData()">
+							<div style="display:flex;flex-direction:column;">
+								<span>Atau tampilkan tanggal : </span>
+								<div class="form-label" style="width:300px;">
+									<input class="form-control"id="thisTegel" type="date" onchange="lookData()">
+								</div>
 							</div>
                         </div>
 						<div class="pd-20 table-responsive">
-							<p>Menampilkan data keluar tanggal <?=date('d M Y', strtotime(date('Y-m-d')));?></p>
+							<p id="paragraphShow">Menampilkan data keluar tanggal <?=date('d M Y', strtotime(date('Y-m-d')));?></p>
                             <table class="data-table table stripe hover nowrap" id="table1">
 								<thead>
 									<tr>

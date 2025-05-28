@@ -70,6 +70,7 @@
                                         $id = $row->id_kain;
                                         $codeinput = $row->codeinput;
                                         $tanggal_masuk = $row->tgl_masuk;
+                                        $orderTgl = date('Y-m-d', strtotime($tanggal_masuk));
                                         $date = new DateTime($tanggal_masuk);
                                         $formatted_date = $date->format('d M Y');
                                         $dt = $this->data_model->get_byid('data_kain', ['id_kain'=>$id])->row_array();
@@ -84,7 +85,7 @@
                                     <tr>
                                         <td><?=$no++;?></td>
                                         <td><?=$row->surat_jalan;?></td>
-                                        <td><?=$formatted_date;?></td>
+                                        <td data-order="<?=$orderTgl;?>"><?=$formatted_date;?></td>
                                         <td><?=$nama_kain;?></td>
                                         <td><?=$frt;?></td>
                                         <td><?=$satuan;?></td>
