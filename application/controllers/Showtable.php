@@ -29,7 +29,7 @@ class Showtable extends CI_Controller
         }
         $nowDte = date('Y-m-d');
         if($tgl=="null" AND $nama=="null"){
-            $qry = "SELECT * FROM data_produk_stok_masuk WHERE tgl_masuk='$nowDte' ORDER BY idstok_in DESC";
+            $qry = "SELECT * FROM data_produk_stok_masuk ORDER BY idstok_in DESC LIMIT 200";
         } else {
             if($tgl=="null" AND $nama!="null"){
                 $qry = "SELECT * FROM data_produk_stok_masuk WHERE tgl_masuk='$nowDte' AND id_produsen='$nama' ORDER BY idstok_in DESC";
@@ -95,7 +95,7 @@ class Showtable extends CI_Controller
         $nowDte = date('Y-m-d');
         if($tgl=="null" AND $nama=="null"){
             //$qry = "SELECT * FROM data_produk_stok_masuk WHERE tgl_masuk='$nowDte' ORDER BY idstok_in DESC";
-            $txtnotif = "Menampilkan data masuk tanggal <strong>".date('d M Y', strtotime($nowDte))."</strong> ".$txt;
+            $txtnotif = "Menampilkan data masuk <strong>200</strong> record terakhir.";
         } else {
             if($tgl=="null" AND $nama!="null"){
                 //$qry = "SELECT * FROM data_produk_stok_masuk WHERE tgl_masuk='$nowDte' AND id_produsen='$nama' ORDER BY idstok_in DESC";
@@ -118,11 +118,11 @@ class Showtable extends CI_Controller
         $tipe = $this->input->post('tipe', TRUE);
         $nama = $this->input->post('nama', TRUE);
         if($nama==""){$nama="null";}
-        if($tgl==""){$tgl="null";}
+        if($tgl==""){$tgl="all";}
         $nowDte = date('Y-m-d');
         if($tgl=="null"){
             if($tipe=="null" AND $nama=="null"){
-                $qry = "SELECT * FROM stok_produk_keluar WHERE tgl_out='$nowDte' ORDER BY id_outstok DESC";
+                $qry = "SELECT * FROM stok_produk_keluar ORDER BY id_outstok DESC LIMIT 200";
             } else {
                 if($tipe=="null" AND $nama!="null"){
                     $qry = "SELECT * FROM stok_produk_keluar WHERE tgl_out='$nowDte' AND nama_tujuan LIKE '$nama' ORDER BY id_outstok DESC";
@@ -132,6 +132,20 @@ class Showtable extends CI_Controller
                 }
                 if($tipe!="null" AND $nama!="null"){
                     $qry = "SELECT * FROM stok_produk_keluar WHERE tgl_out='$nowDte' AND tujuan LIKE '$tipe' AND nama_tujuan LIKE '%$nama%' ORDER BY id_outstok DESC";
+                }
+            }
+        } elseif($tgl=="all"){
+            if($tipe=="null" AND $nama=="null"){
+                $qry = "SELECT * FROM stok_produk_keluar WHERE ORDER BY id_outstok DESC DESC LIMIT 200";
+            } else {
+                if($tipe=="null" AND $nama!="null"){
+                    $qry = "SELECT * FROM stok_produk_keluar WHERE nama_tujuan LIKE '$nama' ORDER BY id_outstok DESC LIMIT 200";
+                }
+                if($tipe!="null" AND $nama=="null"){
+                    $qry = "SELECT * FROM stok_produk_keluar WHERE tujuan LIKE '$tipe' ORDER BY id_outstok DESC LIMIT 200";
+                }
+                if($tipe!="null" AND $nama!="null"){
+                    $qry = "SELECT * FROM stok_produk_keluar WHERE tujuan LIKE '$tipe' AND nama_tujuan LIKE '%$nama%' ORDER BY id_outstok DESC LIMIT 200";
                 }
             }
         } else {
@@ -211,11 +225,11 @@ class Showtable extends CI_Controller
         $nama = $this->input->post('nama', TRUE);
         $nowDte = date('Y-m-d');
         if($nama==""){$nama="null";}
-        if($tgl==""){$tgl="null";}
+        if($tgl==""){$tgl="all";}
         if($tgl=="null"){
             if($tipe=="null" AND $nama=="null"){
                 $qry = "SELECT * FROM stok_produk_keluar WHERE tgl_out='$nowDte' ORDER BY id_outstok DESC";
-                $txt = "Menampilkan data keluar tanggal <strong>".date('d M Y', strtotime(date('Y-m-d')))."</strong>";
+                $txt = "Menampilkan data keluar <strong>200</strong> record terakhir.";
             } else {
                 if($tipe=="null" AND $nama!="null"){
                     $qry = "SELECT * FROM stok_produk_keluar WHERE tgl_out='$nowDte' AND nama_tujuan LIKE '$nama' ORDER BY id_outstok DESC";
@@ -228,6 +242,24 @@ class Showtable extends CI_Controller
                 if($tipe!="null" AND $nama!="null"){
                     $qry = "SELECT * FROM stok_produk_keluar WHERE tgl_out='$nowDte' AND tujuan LIKE '$tipe' AND nama_tujuan LIKE '%$nama%' ORDER BY id_outstok DESC";
                     $txt = "Menampilkan data keluar tanggal ".date('d M Y', strtotime(date('Y-m-d')))."</strong> untuk tujuan <strong>".$tipe."</strong> dan pengiriman ke <strong>".$nama."</strong>";
+                }
+            }
+        } elseif($tgl=="all"){
+            if($tipe=="null" AND $nama=="null"){
+                $qry = "SELECT * FROM stok_produk_keluar WHERE ORDER BY id_outstok DESC DESC LIMIT 200";
+                $txt = "Menampilkan data keluar <strong>200</strong> record terakhir.";
+            } else {
+                if($tipe=="null" AND $nama!="null"){
+                    $qry = "SELECT * FROM stok_produk_keluar WHERE nama_tujuan LIKE '$nama' ORDER BY id_outstok DESC LIMIT 200";
+                    $txt = "Menampilkan data keluar <strong>200</strong> record terakhir penerima ke <strong>".$nama."</strong>";
+                }
+                if($tipe!="null" AND $nama=="null"){
+                    $qry = "SELECT * FROM stok_produk_keluar WHERE tujuan LIKE '$tipe' ORDER BY id_outstok DESC LIMIT 200";
+                    $txt = "Menampilkan data keluar <strong>200</strong> record terakhir tujuan <strong>".$tipe."</strong>";
+                }
+                if($tipe!="null" AND $nama!="null"){
+                    $qry = "SELECT * FROM stok_produk_keluar WHERE tujuan LIKE '$tipe' AND nama_tujuan LIKE '%$nama%' ORDER BY id_outstok DESC LIMIT 200";
+                    $txt = "Menampilkan data keluar <strong>200</strong> record terakhir tujuan <strong>".$tipe."</strong> dan penerima <strong>".$nama."</strong>";
                 }
             }
         } else {

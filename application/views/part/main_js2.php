@@ -398,20 +398,19 @@
 				// Data untuk autocomplete
 				
 			});
-			function changeKode23(kodebar1,iddis,toko){
+			function changeKode23(kodebar1){
 				$.ajax({
 					url:"<?=base_url();?>proses2/cekHarga",
 					type: "POST",
-					data: {"id" : kodebar1, "iddis" : iddis, "toko" : toko},
+					data: {"id" : kodebar1},
 					cache: false,
 					success: function(dataResult){
 						var dataResult = JSON.parse(dataResult);
 						if(dataResult.statusCode == 200){
+							
 								$('#kode_bar123').val(''+kodebar1);
 								$('#harga_produksi23').val(''+dataResult.harga_produk);
 								$('#harga_jual23').val(''+dataResult.harga_jual);
-								$('#iddisid').val(''+iddis);
-								$('#tokoid').val(''+toko);
 							} else {
 								Swal.fire('Error.. (291)');
 							}

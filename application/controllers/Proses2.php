@@ -361,7 +361,7 @@ class Proses2 extends CI_Controller
             $harga_jual = $val->harga_jual;
             $code_sha = $val->code_sha;
             $this->data_model->saved('data_produk_stok', [
-                'id_bar' => $id_bar,
+                
                 'id_produk' => $id_produk,
                 'kode_bar1' => $kode_bar1,
                 'harga_produk' => $harga_produk,
@@ -556,7 +556,7 @@ class Proses2 extends CI_Controller
                             $harga_jual = $val->harga_jual;
                             $code_sha = $val->code_sha;
                             $this->data_model->saved('data_produk_stok_onagen',[
-                                'id_bar' => $id_bar,
+                                
                                 'id_produk' => $id_produk,
                                 'kode_bar1' => $kode_bar1,
                                 'harga_produk' => $harga_produk,
@@ -728,50 +728,21 @@ class Proses2 extends CI_Controller
         }
     } //end 
     function cekHarga(){
-        $kode_bar1      = $this->input->post('id', TRUE);
-        $iddis          = $this->input->post('iddis', TRUE);
-        $toko           = $this->input->post('toko', TRUE);
-        if($iddis==0){
-            if($toko == 2){
-                $dt = $this->db->query("SELECT harga_produk,harga_jual FROM data_produk_stok_onagen WHERE kode_bar1 = '$kode_bar1' AND id_dis=11 ORDER BY id_bar DESC LIMIT 1")->row_array();
-                $harga_produk   = $dt['harga_produk'];
-                $harga_jual     = $dt['harga_jual'];
-            } else {
-                $dt = $this->db->query("SELECT harga_produk,harga_jual FROM data_produk_stok WHERE kode_bar1 = '$kode_bar1' ORDER BY id_bar DESC LIMIT 1")->row_array();
-                $harga_produk   = $dt['harga_produk'];
-                $harga_jual     = $dt['harga_jual'];
-            }
-        } else {
-                $dt = $this->db->query("SELECT harga_produk,harga_jual FROM data_produk_stok_onagen WHERE kode_bar1 = '$kode_bar1' AND id_dis='$iddis' ORDER BY id_bar DESC LIMIT 1")->row_array();
-                $harga_produk   = $dt['harga_produk'];
-                $harga_jual     = $dt['harga_jual'];
-        }
-        //$harga_produk   = $this->db->query("SELECT harga_produk,harga_jual FROM data_produk_stok WHERE kode_bar1 = '$kode_bar1' ORDER BY id_bar DESC LIMIT 1")->row('harga_produk');
-        //$harga_jual     = $this->db->query("SELECT harga_produk,harga_jual FROM data_produk_stok WHERE kode_bar1 = '$kode_bar1' ORDER BY id_bar DESC LIMIT 1")->row('harga_jual');
+        $kode_bar1 = $this->input->post('id', TRUE);
+        $harga_produk = $this->db->query("SELECT harga_produk,harga_jual FROM data_produk_stok WHERE kode_bar1 = '$kode_bar1' ORDER BY id_bar DESC LIMIT 1")->row('harga_produk');
+        $harga_jual = $this->db->query("SELECT harga_produk,harga_jual FROM data_produk_stok WHERE kode_bar1 = '$kode_bar1' ORDER BY id_bar DESC LIMIT 1")->row('harga_jual');
 	    $_hrg1 = number_format($harga_produk, 0, ',', '.');
 	    $_hrg2 = number_format($harga_jual, 0, ',', '.');
         echo json_encode(array("statusCode"=>200, "psn"=>"yes", "harga_produk"=>$_hrg1, "harga_jual"=>$_hrg2));
     } //en
     function updateharga(){
-        $kode_bar1          = $this->input->post('kode_bar1', TRUE);
-        $harga_produksi2    = $this->input->post('harga_produksi', TRUE);
-        $harga_jual2        = $this->input->post('harga_jual', TRUE);
-        $codereal           = $this->input->post('codereal', TRUE);
-        $iddis              = $this->input->post('iddis', TRUE);
-        $toko               = $this->input->post('toko', TRUE);
-        $harga_produksi     = preg_replace('/[^0-9]/', '', $harga_produksi2);
-        $harga_jual         = preg_replace('/[^0-9]/', '', $harga_jual2);
-
-        if($iddis == 0){
-            if($toko==2){
-                $this->db->query("UPDATE data_produk_stok_onagen SET harga_produk = '$harga_produksi', harga_jual = '$harga_jual' WHERE kode_bar1 = '$kode_bar1' AND id_dis=11");
-            } else {
-                $this->db->query("UPDATE data_produk_stok SET harga_produk = '$harga_produksi', harga_jual = '$harga_jual' WHERE kode_bar1 = '$kode_bar1'");
-            }
-        } else {
-            $this->db->query("UPDATE data_produk_stok_onagen SET harga_produk = '$harga_produksi', harga_jual = '$harga_jual' WHERE kode_bar1 = '$kode_bar1' AND id_dis='$iddis'");
-        }
-        //$this->data_model->updatedata('kode_bar1', $kode_bar1, 'data_produk_stok', ['harga_produk'=>$harga_produksi,'harga_jual'=>$harga_jual]);
+        $kode_bar1 = $this->input->post('kode_bar1', TRUE);
+        $harga_produksi2 = $this->input->post('harga_produksi', TRUE);
+        $harga_jual2 = $this->input->post('harga_jual', TRUE);
+        $codereal = $this->input->post('codereal', TRUE);
+        $harga_produksi = preg_replace('/[^0-9]/', '', $harga_produksi2);
+        $harga_jual = preg_replace('/[^0-9]/', '', $harga_jual2);
+        $this->data_model->updatedata('kode_bar1', $kode_bar1, 'data_produk_stok', ['harga_produk'=>$harga_produksi,'harga_jual'=>$harga_jual]);
         $this->data_model->updatedata('kode_bar1', $kode_bar1, 'data_produk_detil', ['harga_produk'=>$harga_produksi,'harga_jual'=>$harga_jual]);
         redirect(base_url("product/".$codereal."/id/0"));
     }

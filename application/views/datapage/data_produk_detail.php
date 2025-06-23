@@ -126,25 +126,11 @@
 										<p>Keterangan Produk : <?=$produk['keterangan_produk'];?></p>
 										<?php
 										$cd = $produk['id_produk'];
-										
+										$jumlah = $this->db->query("SELECT COUNT(id_bar) AS jml FROM data_produk_stok WHERE id_produk = '$cd'")->row('jml');
 										if($this->uri->segment(3) == "id"){
 											$loc = $this->uri->segment(4);
-											$loc2 = $this->uri->segment(5);
 											$dt = $this->db->query("SELECT id_produk,kode_bar,warna_model FROM data_produk_detil WHERE id_produk = '$cd' GROUP BY warna_model ORDER BY CAST(REGEXP_SUBSTR(kode_bar, '[0-9]+') AS UNSIGNED)");
-											if($loc==0){
-												if($loc2==1){
-													$jumlah = $this->db->query("SELECT COUNT(id_bar) AS jml FROM data_produk_stok WHERE id_produk = '$cd'")->row('jml');
-												} else {
-													$jumlah = $this->db->query("SELECT COUNT(id_bar) AS jml FROM data_produk_stok_onagen WHERE id_produk = '$cd' AND id_dis=11")->row('jml');
-												}
-											} else {
-												$jumlah = $this->db->query("SELECT COUNT(id_bar) AS jml FROM data_produk_stok_onagen WHERE id_produk = '$cd' AND id_dis='$loc'")->row('jml');
-											}
-											
 										} else {
-											$loc = 0;
-											$loc2 = 1;
-											$jumlah = $this->db->query("SELECT COUNT(id_bar) AS jml FROM data_produk_stok WHERE id_produk = '$cd'")->row('jml');
 											$dt = $this->db->query("SELECT id_produk,kode_bar,warna_model FROM data_produk_detil WHERE id_produk = '$cd'  GROUP BY warna_model ORDER BY CAST(REGEXP_SUBSTR(kode_bar, '[0-9]+') AS UNSIGNED)");
 										}
 										//echo $cd;
@@ -183,24 +169,12 @@
 											echo "<td>";
 											for ($p=0; $p <count($ar_ukur) ; $p++) { 
 												$kode_bar1 = $det->kode_bar."-".$ar_ukur[$p];
-												if($loc==0){
-													if($loc2==1){
-														$jumlahmotif = $this->db->query("SELECT COUNT(id_bar) AS jml FROM data_produk_stok WHERE kode_bar1 = '$kode_bar1'")->row('jml');
-														$_hrg = $this->db->query("SELECT harga_produk,harga_jual FROM data_produk_stok WHERE kode_bar1 = '$kode_bar1' ORDER BY id_bar DESC LIMIT 1")->row('harga_jual');
-													} else {
-														$jumlahmotif = $this->db->query("SELECT COUNT(id_bar) AS jml FROM data_produk_stok_onagen WHERE kode_bar1 = '$kode_bar1' AND id_dis=11")->row('jml');
-														$_hrg = $this->db->query("SELECT harga_produk,harga_jual FROM data_produk_stok_onagen WHERE kode_bar1 = '$kode_bar1' AND id_dis=11 ORDER BY id_bar DESC LIMIT 1")->row('harga_jual');
-													}
-												} else {
-													$jumlahmotif = $this->db->query("SELECT COUNT(id_bar) AS jml FROM data_produk_stok_onagen WHERE kode_bar1 = '$kode_bar1' AND id_dis='$loc'")->row('jml');
-													$_hrg = $this->db->query("SELECT harga_produk,harga_jual FROM data_produk_stok_onagen WHERE kode_bar1 = '$kode_bar1' AND id_dis='$loc' ORDER BY id_bar DESC LIMIT 1")->row('harga_jual');
-												}
-												
+												$jumlah = $this->db->query("SELECT COUNT(id_bar) AS jml FROM data_produk_stok WHERE kode_bar1 = '$kode_bar1' ")->row('jml');
+												$_hrg = $this->db->query("SELECT harga_produk,harga_jual FROM data_produk_stok WHERE kode_bar1 = '$kode_bar1' ORDER BY id_bar DESC LIMIT 1")->row('harga_jual');
 												$_hrg1 = number_format($_hrg, 0, ',', '.');
-												if($jumlahmotif>0){
 												?>
-												(<?=$ar_ukur[$p];?>, <?=$jumlahmotif?> Pcs) <a style="color:blue;text-decoration:none;" href="javascript:;" data-toggle="modal" data-target="#modals23" onclick="changeKode23('<?=$kode_bar1;?>','<?=$loc;?>','<?=$loc2;?>')">Rp. <?=$_hrg1?></a><br>
-												<?php }
+												(<?=$ar_ukur[$p];?>, <?=$jumlah?> Pcs) <a style="color:blue;text-decoration:none;" href="javascript:;" data-toggle="modal" data-target="#modals23" onclick="changeKode23('<?=$kode_bar1?>')">Rp. <?=$_hrg1?></a><br>
+												<?php
 												
 											}
 											echo "</td>";
@@ -275,8 +249,6 @@
 											</div>
                                             <?php echo form_open_multipart('proses2/updateharga'); ?>
                                             <input type="hidden" value="<?=$codereal;?>" name="codeunik" required>
-                                            <input type="hidden" value="0" name="iddis" id="iddisid" required>
-                                            <input type="hidden" value="0" name="toko" id="tokoid" required>
 											<div class="modal-body" id="modalBodyid23">
                                                 <label for="kode_bar123">Kode Produk</label>
                                                 <input class="form-control" name="kode_bar1" id="kode_bar123" type="text" value="Loading..." readonly />

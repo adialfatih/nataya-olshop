@@ -350,7 +350,7 @@ class Prosesajax extends CI_Controller
                             <i class="dw dw-more"></i>
                         </a>
                         <div class="dropdown-menu dropdown-menu-right dropdown-menu-icon-list">
-                            <a class="dropdown-item" target="_blank" href="<?=base_url('product/'.$codeunik.'/id');?><?='/'.$id.'/'.$tipeShowStokID;?>"><i class="dw dw-eye"></i> View
+                            <a class="dropdown-item" href="<?=base_url('product/'.$codeunik.'/id');?><?='/'.$id.'/'.$tipeShowStokID;?>"><i class="dw dw-eye"></i> View
                             </a>
                             <?php if($_ada == "no"){?>
                             <a class="dropdown-item" href="javascript:void(0);" style="color:red;" onclick="hapusProduk('<?=$val->nama_produk;?>','<?=$id_produk;?>')">
@@ -379,7 +379,7 @@ class Prosesajax extends CI_Controller
                                         <i class="dw dw-more"></i>
                                     </a>
                                     <div class="dropdown-menu dropdown-menu-right dropdown-menu-icon-list">
-                                        <a class="dropdown-item" target="_blank" href="<?=base_url('product/'.$codeunik.'/id');?><?='/'.$id.'/'.$tipeShowStokID;?>"><i class="dw dw-eye"></i> View
+                                        <a class="dropdown-item" href="<?=base_url('product/'.$codeunik.'/id');?><?='/'.$id.'/'.$tipeShowStokID;?>"><i class="dw dw-eye"></i> View
                                         </a>
                                         <a class="dropdown-item" href="javascript:void(0);">
                                             <i class="bi bi-send" style="color:blue;"></i> Kirim Produk
